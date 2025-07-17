@@ -1,0 +1,12 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+optuna
+imbalanced-learn
+scipy
+scikit-posthocs
+scikit-fuzzy
+xanfis
+warnings
