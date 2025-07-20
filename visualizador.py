@@ -69,7 +69,7 @@ class Visualizador:
 
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=classes, yticklabels=classes)
-        plt.title(f'Matriz de Confusão - {algoritmo}')
+        plt.title(f'{algoritmo}')
         plt.xlabel('Classe Predita')
         plt.ylabel('Classe Real')
         plt.show()
@@ -80,3 +80,39 @@ class Visualizador:
 
         for nome, y_pred in y_pred_dict.items():
             self.plotar_matriz_confusao(y_teste, y_pred, nome, classes=classes)
+
+    def plotar_comparacao_experimentos(self, resultados_simples, resultados_completos, algoritmos):
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        axes = axes.flatten()
+        
+        metricas = ['acuracia', 'f1_score', 'precisao', 'recall']
+        titulos = ['Acurácia', 'F1-Score', 'Precisão', 'Recall']
+        
+        for i, (metrica, titulo) in enumerate(zip(metricas, titulos)):
+            df_plot = pd.DataFrame()
+            
+            for alg in algoritmos:
+                df_temp_simples = pd.DataFrame({
+                    'Algoritmo': [alg] * len(resultados_simples[alg][metrica]),
+                    'Configuração': ['Apenas Normalização'] * len(resultados_simples[alg][metrica]),
+                    'Valor': resultados_simples[alg][metrica]
+                })
+                 
+                df_temp_completo = pd.DataFrame({
+                    'Algoritmo': [alg] * len(resultados_completos[alg][metrica]),
+                    'Configuração': ['Processamento Completo'] * len(resultados_completos[alg][metrica]),
+                    'Valor': resultados_completos[alg][metrica]
+                })
+                
+                df_plot = pd.concat([df_plot, df_temp_simples, df_temp_completo], ignore_index=True)
+            
+            sns.boxplot(data=df_plot, x='Algoritmo', y='Valor', hue='Configuração', ax=axes[i])
+            axes[i].set_title(f'{titulo}')
+            axes[i].set_ylabel(titulo)
+            axes[i].tick_params(axis='x', rotation=45)
+            axes[i].legend(loc='upper right')
+            axes[i].grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.suptitle("Comparação: Apenas Normalização vs Processamento Completo", y=1.02, fontsize=16)
+        plt.show()

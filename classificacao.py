@@ -96,7 +96,7 @@ def executar_analise_completa_dataset(X, y, nome_dataset, modelos, otimizador, v
     analise_estatistica_abrangente(resultados_completo, logger)
 
     logger.write("\nGerando visualizações comparativas...\n")
-    plotar_comparacao_experimentos(resultados_simples, resultados_completo, algoritmos)
+    visualizador.plotar_comparacao_experimentos(resultados_simples, resultados_completo, algoritmos)
     
     logger.write("\nGerando visualizações detalhadas...\n")
     visualizador.plotar_comparacao_performance(resultados_simples, algoritmos)
@@ -310,54 +310,6 @@ def comparar_experimentos(resultados_simples, resultados_completos, algoritmos, 
     
     melhoria_absoluta = f1_melhor_completo - f1_melhor_simples
     logger.write(f"Melhoria absoluta no melhor resultado: {melhoria_absoluta:+.4f}\n")
-
-def plotar_comparacao_experimentos(resultados_simples, resultados_completos, algoritmos):
-    """Plota gráficos comparativos entre os dois experimentos"""
-    
-    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-    axes = axes.flatten()
-    
-    metricas = ['acuracia', 'f1_score', 'precisao', 'recall']
-    titulos = ['Acurácia', 'F1-Score', 'Precisão', 'Recall']
-    
-    for i, (metrica, titulo) in enumerate(zip(metricas, titulos)):
-        dados_simples = []
-        dados_completos = []
-        labels = []
-        
-        for alg in algoritmos:
-            dados_simples.extend(resultados_simples[alg][metrica])
-            dados_completos.extend(resultados_completos[alg][metrica])
-            labels.extend([f'{alg}\n(Simples)'] * len(resultados_simples[alg][metrica]))
-            labels.extend([f'{alg}\n(Completo)'] * len(resultados_completos[alg][metrica]))
-        
-        df_plot = pd.DataFrame()
-        
-        for alg in algoritmos:
-            df_temp_simples = pd.DataFrame({
-                'Algoritmo': [alg] * len(resultados_simples[alg][metrica]),
-                'Configuração': ['Apenas Normalização'] * len(resultados_simples[alg][metrica]),
-                'Valor': resultados_simples[alg][metrica]
-            })
-             
-            df_temp_completo = pd.DataFrame({
-                'Algoritmo': [alg] * len(resultados_completos[alg][metrica]),
-                'Configuração': ['Processamento Completo'] * len(resultados_completos[alg][metrica]),
-                'Valor': resultados_completos[alg][metrica]
-            })
-            
-            df_plot = pd.concat([df_plot, df_temp_simples, df_temp_completo], ignore_index=True)
-        
-        sns.boxplot(data=df_plot, x='Algoritmo', y='Valor', hue='Configuração', ax=axes[i])
-        axes[i].set_title(f'Comparação: {titulo}')
-        axes[i].set_ylabel(titulo)
-        axes[i].tick_params(axis='x', rotation=45)
-        axes[i].legend(loc='upper right')
-        axes[i].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.suptitle("Comparação: Apenas Normalização vs Processamento Completo", y=1.02, fontsize=16)
-    plt.show()
 
 def analise_estatistica_abrangente(resultados, logger):
     algoritmos = list(resultados.keys())
