@@ -56,7 +56,7 @@ Os resultados são salvos automaticamente em:
 
 ### Pré-processamento
 - Normalização com RobustScaler
-- Seleção automática de características com Random Forest
+- Seleção automática de características com Random Forest e cotovelo
 - Balanceamento de classes com SMOTE
 
 ### Otimização
@@ -67,7 +67,6 @@ Os resultados são salvos automaticamente em:
 ### Análise Estatística
 - Teste de Friedman
 - Post-hoc de Nemenyi
-- Teste de Wilcoxon
 - 30 repetições por experimento
 
 ### Visualizações
